@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66659c53e2e141a380d9097167b4a8de, type: 3}
+  m_Name: NormalTowerDataSO
+  m_EditorClassIdentifier: 
+  TowerName: Normal Tower
+  TowerType: 0
+  Sprite: {fileID: 21300000, guid: 7295007a4f71b1d48a13b13b05491cd7, type: 3}
+  TowerStats:
+    Damage: 50
+    AttackSpeed: 3
+    Range: 25
+    MultishotChance: 0
+    CritChance: 0
+    CritMultiplier: 0
+    MaxHealth: 100
+    HealthRegeneration: 0
+    Defense: 0
+    VampirismChance: 0
+    VampirismMultiplier: 0
+    WaveGoldReward: 0
+    WaveCrystalReward: 0
+    GoldPerKillBonus: 0
+    FreeUpgradeChance: 0
+  Projectile: {fileID: 4505351148469685283, guid: 4022825666010314f9d7965e5fa7b50f, type: 3}
