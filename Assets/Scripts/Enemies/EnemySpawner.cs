@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using Enemies.Factories;
-using Enemies.ScriptableObjects;
-using GameData.Observer;
-using Lean.Pool;
+using ScriptableObjectData.EnemySO;
 using UnityEngine;
 
 namespace Enemies
@@ -23,11 +21,7 @@ namespace Enemies
         public Enemy Spawn(EnemyType type)
         {
             Transform point = _spawnPoints[Random.Range(0, _spawnPoints.Length)];
-            Enemy enemy = _factory.Create(type, point.position);
-            
-            GameEvents.NotifyEnemySpawned(enemy);
-
-            return enemy;
+            return _factory.Create(type, point.position);
         }
     }
 }

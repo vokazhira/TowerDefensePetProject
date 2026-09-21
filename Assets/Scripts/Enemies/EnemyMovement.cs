@@ -17,6 +17,8 @@ namespace Enemies
 
         private void Update()
         {
+            if (!_isMoving || _target == null) return;
+            
             Vector3 direction = (_target.position - transform.position).normalized;
             transform.position += direction * (_speed * Time.deltaTime);
         }

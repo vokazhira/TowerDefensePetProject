@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1827534758765698913}
   - component: {fileID: 4505351148469685283}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: ArrowTowerProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

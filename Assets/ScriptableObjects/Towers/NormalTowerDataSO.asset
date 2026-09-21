@@ -23,7 +23,7 @@ MonoBehaviour:
     CritChance: 0
     CritMultiplier: 0
     MaxHealth: 100
-    HealthRegeneration: 0
+    HealthRegeneration: 1
     Defense: 0
     VampirismChance: 0
     VampirismMultiplier: 0

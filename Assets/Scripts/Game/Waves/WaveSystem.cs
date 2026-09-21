@@ -1,13 +1,11 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Enemies;
-using Enemies.Factories;
-using GameData.Observer;
-using Levels;
+using Game.Events.Observer;
+using ScriptableObjectData.LevelSO;
+using ScriptableObjectData.WaveSO;
 using UnityEngine;
-using Waves.ScriptableObjects;
 
-namespace Waves
+namespace Game.Waves
 {
     public class WaveSystem : MonoBehaviour
     {
@@ -18,6 +16,9 @@ namespace Waves
         private int _aliveEnemies;
         private bool _isSpawning;
         private bool _isRunning;
+        private int _crystalEarnedThisLevel;
+        
+        public int CrystalEarnedThisLevel => _crystalEarnedThisLevel;
 
         private void OnEnable()
         {
@@ -37,8 +38,17 @@ namespace Waves
             _isRunning = true;
             _currentWaveIndex = 0;
             _aliveEnemies = 0;
+            _crystalEarnedThisLevel = 0;
 
             StartCoroutine(RunLevel());
+        }
+
+        public void StopLevel()
+        {
+            StopAllCoroutines();
+            _isRunning = false;
+            _isSpawning = false;
+            _currentLevel = null;
         }
 
         private IEnumerator RunLevel()
@@ -48,14 +58,22 @@ namespace Waves
                 WaveData wave = _currentLevel.Waves[_currentWaveIndex];
                 yield return new WaitForSeconds(wave.DelayBeforeWave);
                 
-                GameEvents.NotifyWaveStarted();
+                GameEvents.NotifyWaveProgressChanged(_currentWaveIndex + 1, _currentLevel.Waves.Count);
+                
                 yield return StartCoroutine(SpawnWave(wave));
                 
                 yield return new WaitUntil(() => _aliveEnemies <= 0 && !_isSpawning);
+
+                int crystalForWave = _currentLevel.CrystalPerWave;
+                _crystalEarnedThisLevel += crystalForWave;
+                GameEvents.NotifyCrystalsEarned(crystalForWave);
                 
-                GameEvents.NotifyWaveCompleted();
                 _currentWaveIndex++;
             }
+
+            int fullClearBonus = _crystalEarnedThisLevel;
+            _crystalEarnedThisLevel += fullClearBonus;
+            GameEvents.NotifyCrystalsEarned(fullClearBonus);
             
             GameEvents.NotifyAllWavesCompleted();
             _isRunning = false;
@@ -71,7 +89,8 @@ namespace Waves
                 for (int i = 0; i < content.Count; i++)
                 {
                     Enemy enemy = _spawner.Spawn(content.EnemyType);
-                    _aliveEnemies++;
+                    
+                    if (enemy != null) _aliveEnemies++;
                     
                     yield return new WaitForSeconds(content.DelayBetweenSpawns);
                 }

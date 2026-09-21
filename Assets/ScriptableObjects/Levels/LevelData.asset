@@ -16,3 +16,4 @@ MonoBehaviour:
   Waves:
   - {fileID: 11400000, guid: 6c6b438abb951154fb4bd55c2fdcb19e, type: 2}
   - {fileID: 11400000, guid: fbd00351ab072bb4fb88dac15a75c3f1, type: 2}
+  CrystalPerWave: 10

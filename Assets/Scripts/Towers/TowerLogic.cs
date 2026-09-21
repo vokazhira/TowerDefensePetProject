@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Enemies;
 using Lean.Pool;
-using ScriptableObjects;
+using ScriptableObjectData.TowerSO;
 using Towers.Projectiles;
 using UnityEngine;
 

@@ -1,4 +1,4 @@
-﻿using GameData.Observer;
+﻿using Game.Events.Observer;
 using Interfaces.Damage;
 using Lean.Pool;
 using UnityEngine;

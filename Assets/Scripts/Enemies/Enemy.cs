@@ -1,5 +1,4 @@
 ﻿using System;
-using GameData.Observer;
 using Lean.Pool;
 using Towers;
 using UnityEngine;
@@ -8,8 +7,6 @@ namespace Enemies
 {
     public class Enemy : MonoBehaviour
     {
-        private const string TowerContactTag = "TowerContact";
-        
         private EnemyHealth _health;
         private EnemyMovement _movement;
         private EnemyStats _stats;
@@ -39,7 +36,7 @@ namespace Enemies
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!_isActive || _health.IsDead) return;
-            if (!other.CompareTag(TowerContactTag)) return;
+            if (!other.CompareTag("TowerContact")) return;
 
             if (_cachedTowerHealth == null)
             {

@@ -18,4 +18,4 @@ MonoBehaviour:
     MaxHealth: 150
     MoveSpeed: 1
     ContactDamage: 50
-    GoldReward: 10
+    GoldReward: 100

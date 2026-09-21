@@ -2,7 +2,7 @@
 using Towers.Projectiles;
 using UnityEngine;
 
-namespace ScriptableObjects
+namespace ScriptableObjectData.TowerSO
 {
     [CreateAssetMenu(fileName = "TowerDataSO", menuName = "ScriptableObjects/TowerData", order = 51)]
     public class TowerDataSO : ScriptableObject

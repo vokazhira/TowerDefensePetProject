@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Enemies.ScriptableObjects;
 using Lean.Pool;
+using ScriptableObjectData.EnemySO;
 using Towers;
 using UnityEngine;
 
@@ -8,8 +8,6 @@ namespace Enemies.Factories
 {
     public class EnemyFactory
     {
-        private const int PrewarmCount = 20;
-        
         private Dictionary<EnemyType, EnemyData> _dataByType = new Dictionary<EnemyType, EnemyData>();
         private Transform _towerTransform;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Enemies;
 using UnityEngine;
 
-namespace Waves.ScriptableObjects
+namespace ScriptableObjectData.WaveSO
 {
     [Serializable]
     public class WaveContent
