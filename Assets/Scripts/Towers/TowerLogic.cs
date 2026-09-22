@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Enemies;
 using Lean.Pool;
-using ScriptableObjectData.TowerSO;
 using Towers.Projectiles;
 using UnityEngine;
 
@@ -10,77 +9,80 @@ namespace Towers
 {
     public class TowerLogic : MonoBehaviour
     {
-        [SerializeField] private TowerDataSO _towerData;
+        [SerializeField] private CircleCollider2D _rangeCollider;
 
+        private TowerRuntimeStats _runtimeStats;
         private TowerHealth _towerHealth;
-        private CircleCollider2D _rangeCollider;
         private List<Enemy> _enemiesInRange = new List<Enemy>();
 
-        private Enemy _currentTarget;
-        private int _shotsFiredAtTarget;
         private Coroutine _shootRoutine;
+        private Enemy _currentTarget;
 
-        private void Awake()
+        public void Init(TowerRuntimeStats runtimeStats)
         {
+            _runtimeStats = runtimeStats;
             _towerHealth = GetComponent<TowerHealth>();
-            _rangeCollider = GetComponent<CircleCollider2D>();
             
-            TowerStats stats = _towerData.TowerStats;
-            _towerHealth.Init(stats.MaxHealth, stats.Defense, stats.HealthRegeneration);
-            
+            _towerHealth.ConfigureAtLevelStart(_runtimeStats.Stats);
             _rangeCollider.isTrigger = true;
-            _rangeCollider.radius = _towerData.TowerStats.Range;
+            _rangeCollider.radius = _runtimeStats.Stats.Range;
+
+            _runtimeStats.OnStatChange += HandleStatChange;
         }
-        
+
         private void Update()
         {
-            if (!IsTargetValid(_currentTarget))
+            if (_currentTarget == null && _enemiesInRange.Count > 0)
             {
-                _currentTarget = SelectTarget();
-                _shotsFiredAtTarget = 0;
+                _currentTarget = GetNearestEnemy();
             }
 
             if (_currentTarget != null && _shootRoutine == null)
             {
-                _shootRoutine = StartCoroutine(ShootRoutine());
+                _shootRoutine = StartCoroutine("ShootRoutine");
             }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.TryGetComponent<Enemy>(out Enemy enemy))
+            if (other.TryGetComponent(out Enemy enemy) && !_enemiesInRange.Contains(enemy))
             {
-                if (!_enemiesInRange.Contains(enemy))
-                {
-                    _enemiesInRange.Add(enemy);
-                }
+                _enemiesInRange.Add(enemy);
             }
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (other.TryGetComponent<Enemy>(out Enemy enemy))
+            if (other.TryGetComponent(out Enemy enemy))
             {
                 _enemiesInRange.Remove(enemy);
-
-                if (enemy == _currentTarget)
-                {
-                    _currentTarget = null;
-                    _shotsFiredAtTarget = 0;
-                }
             }
         }
 
-        private Enemy SelectTarget()
+        private IEnumerator ShootRoutine()
         {
-            CleanUpEnemies();
+            while (_currentTarget != null && !_currentTarget.Health.IsDead)
+            {
+                Projectile projectile = LeanPool.Spawn(_runtimeStats.TowerData.Projectile,  transform.position, Quaternion.identity);
+                projectile.Init(_currentTarget, _runtimeStats.Stats.Damage);
+
+                yield return new WaitForSeconds(1f / _runtimeStats.Stats.AttackSpeed);
+                _currentTarget = GetNearestEnemy();
+            }
+
+            _shootRoutine = null;
+        }
+
+        private Enemy GetNearestEnemy()
+        {
+            _enemiesInRange.RemoveAll(enemy => enemy == null || !enemy.gameObject.activeInHierarchy || enemy.Health.IsDead);
             
             Enemy nearest = null;
             float nearestDistance = float.MaxValue;
 
             foreach (Enemy enemy in _enemiesInRange)
             {
-                float distance = Vector2.Distance(transform.position, enemy.transform.position);
+                float distance  = Vector2.Distance(transform.position, enemy.transform.position);
 
                 if (distance < nearestDistance)
                 {
@@ -91,54 +93,25 @@ namespace Towers
             
             return nearest;
         }
-        
-        private void Shoot(Enemy target)
-        {
-            if (target == null) return;
-            
-            Projectile proj = LeanPool.Spawn(_towerData.Projectile, transform.position, Quaternion.identity);
-            proj.Init(target, _towerData.TowerStats.Damage);
-        }
-        
-        private void CleanUpEnemies() => _enemiesInRange.RemoveAll(e => 
-            e == null || !e.gameObject.activeInHierarchy || e.Health.IsDead);
-        private bool IsTargetValid(Enemy enemy) => enemy != null 
-                                                   && enemy.gameObject.activeInHierarchy
-                                                   && !enemy.Health.IsDead
-                                                   && _enemiesInRange.Contains(enemy);
-        private int GetKillShotsCount(Enemy target) => Mathf.CeilToInt(target.Health.MaxHealth / _towerData.TowerStats.Damage);
-        private float GetAttackInterval() => 1f / _towerData.TowerStats.AttackSpeed;
 
-        private IEnumerator ShootRoutine()
+        private void HandleStatChange(TowerStatType statType)
         {
-            while (true)
+            if (statType == TowerStatType.Range)
             {
-                if (!IsTargetValid(_currentTarget))
-                {
-                    _currentTarget = SelectTarget();
-                    if (_currentTarget == null)
-                    {
-                        _shootRoutine = null;
-                        yield break;
-                    }
-                }
-                
-                Shoot(_currentTarget);
-                _shotsFiredAtTarget++;
-
-                if (_shotsFiredAtTarget >= GetKillShotsCount(_currentTarget))
-                {
-                    _currentTarget = SelectTarget();
-                    _shotsFiredAtTarget = 0;
-
-                    if (_currentTarget == null)
-                    {
-                        _shootRoutine = null;
-                        yield break;
-                    }
-                }
-                yield return new WaitForSeconds(GetAttackInterval());
+                _rangeCollider.radius = _runtimeStats.Stats.Range;
             }
+
+            if (statType == TowerStatType.MaxHealth ||
+                statType == TowerStatType.Defense ||
+                statType == TowerStatType.HealthRegeneration)
+            {
+                _towerHealth.ApplyStats(_runtimeStats.Stats);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            _runtimeStats.OnStatChange -= HandleStatChange;
         }
     }
 }

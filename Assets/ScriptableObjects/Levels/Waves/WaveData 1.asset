@@ -15,12 +15,12 @@ MonoBehaviour:
   WaveName: "\u0412\u043E\u043B\u043D\u0430 2"
   Contents:
   - EnemyType: 2
-    Count: 2
+    Count: 10
     DelayBetweenSpawns: 0
   - EnemyType: 2
-    Count: 2
+    Count: 10
     DelayBetweenSpawns: 0
   - EnemyType: 2
-    Count: 2
+    Count: 10
     DelayBetweenSpawns: 0
   DelayBeforeWave: 0

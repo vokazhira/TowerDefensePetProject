@@ -31,4 +31,16 @@ MonoBehaviour:
     WaveCrystalReward: 0
     GoldPerKillBonus: 0
     FreeUpgradeChance: 0
+  Multipliers:
+    Damage: 1
+    AttackSpeed: 0.5
+    Range: 0.3
+    MultishotChance: 1
+    CritChance: 1
+    CritMultiplier: 1
+    MaxHealth: 16
+    HealthRegeneration: 1
+    Defense: 1
+    VampirismChance: 0
+    VampirismMultiplier: 0
   Projectile: {fileID: 4505351148469685283, guid: 4022825666010314f9d7965e5fa7b50f, type: 3}

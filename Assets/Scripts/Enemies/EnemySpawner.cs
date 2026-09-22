@@ -20,8 +20,8 @@ namespace Enemies
 
         public Enemy Spawn(EnemyType type)
         {
-            Transform point = _spawnPoints[Random.Range(0, _spawnPoints.Length)];
-            return _factory.Create(type, point.position);
+            Vector2 point = (Vector2)_spawnPoints[Random.Range(0, _spawnPoints.Length)].position + new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+            return _factory.Create(type, point);
         }
     }
 }

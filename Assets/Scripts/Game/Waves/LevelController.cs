@@ -12,18 +12,12 @@ namespace Game.Waves
         [SerializeField] private WaveSystem _waveSystem;
         [SerializeField] private LevelView _levelView;
         [SerializeField] private LevelResultPanel _resultPanel;
-        [SerializeField] private TotalCrystalsView _totalCrystalsView;
 
         private GameCurrency _gameCurrency;
-        private GlobalCurrency _globalCurrency;
 
-        private void Awake()
+        public void Init(GameCurrency currency)
         {
-            _gameCurrency = new GameCurrency();
-            _globalCurrency = new GlobalCurrency();
-            
-            _levelView.Init(_gameCurrency);
-            _totalCrystalsView.Init(_globalCurrency);
+            _gameCurrency = currency;
         }
         
         private void OnEnable()
@@ -38,9 +32,16 @@ namespace Game.Waves
             GameEvents.OnTowerDestroyed -= HandleDefeat;
         }
 
-        public void StartLevel(LevelData levelData)
+        public void StartSelectedLevel()
         {
-            _gameCurrency.Reset();
+            LevelData levelData = GameSession.Instance.SelectedLevel;
+
+            if (levelData == null)
+            {
+                GameSession.Instance.ReturnToMenu();
+                return;
+            }
+            
             _resultPanel.Hide();
             _levelView.Show();
             
@@ -52,20 +53,12 @@ namespace Game.Waves
         {
             _levelView.Hide();
             _resultPanel.ShowVictory(_waveSystem.CrystalEarnedThisLevel);
-            _gameCurrency.Reset();
         }
         public void HandleDefeat()
         {
             _waveSystem.StopLevel();
             _levelView.Hide();
             _resultPanel.ShowDefeat(_waveSystem.CrystalEarnedThisLevel);
-            _gameCurrency.Reset();
-        }
-
-        private void OnDestroy()
-        {
-            _gameCurrency.Dispose();
-            _globalCurrency.Dispose();
         }
     }
 }

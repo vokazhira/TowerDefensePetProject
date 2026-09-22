@@ -5,45 +5,42 @@ namespace Game.Currency
 {
     public class GameCurrency : IDisposable
     {
-        private int _gold;
-        private int _crystalsThisLevel;
-        
-        public int Gold => _gold;
-        public int CrystalsThisLevel => _crystalsThisLevel;
+        public int Gold { get; private set; }
+        public int CrystalsThisLevel { get; private set; }
         
         public event Action<int> OnGoldChanged;
         public event Action<int> OnCrystalsChanged;
 
         public GameCurrency()
         {
-            GameEvents.OnGoldEarned += HandleGoldEarned;
-            GameEvents.OnCrystalsEarned += HandleCrystalChanged;
+            GameEvents.OnGoldEarned += AddGold;
+            GameEvents.OnCrystalsEarned += AddCrystals;
         }
 
-        private void HandleGoldEarned(int amount)
+        public bool TrySpendGold(int amount)
         {
-            _gold += amount;
-            OnGoldChanged?.Invoke(_gold);
-        }
-
-        private void HandleCrystalChanged(int amount)
-        {
-            _crystalsThisLevel += amount;
-            OnCrystalsChanged?.Invoke(_crystalsThisLevel);
+            if (Gold < amount) return false;
+            Gold -= amount;
+            OnGoldChanged?.Invoke(Gold);
+            return true;
         }
         
-        public void Reset()
+        private void AddGold(int amount)
         {
-            _gold = 0;
-            _crystalsThisLevel = 0;
-            OnGoldChanged?.Invoke(_gold);
-            OnCrystalsChanged?.Invoke(_crystalsThisLevel);
+            Gold += amount;
+            OnGoldChanged?.Invoke(Gold);
+        }
+
+        private void AddCrystals(int amount)
+        {
+            CrystalsThisLevel += amount;
+            OnCrystalsChanged?.Invoke(CrystalsThisLevel);
         }
 
         public void Dispose()
         {
-            GameEvents.OnGoldEarned -= HandleGoldEarned;
-            GameEvents.OnCrystalsEarned -= HandleCrystalChanged;
+            GameEvents.OnGoldEarned -= AddGold;
+            GameEvents.OnCrystalsEarned -= AddCrystals;
         }
     }
 }

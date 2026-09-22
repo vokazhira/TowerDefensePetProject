@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Game;
+using TMPro;
 using UnityEngine;
 
 namespace UI
@@ -13,15 +14,23 @@ namespace UI
 
         public void ShowVictory(int crystalEarnedThisLevel)
         {
-            _resultTitleText.text = "Победа!";
-            _crystalsEarnedText.text = $"+{crystalEarnedThisLevel} кристаллов";
-            _rootPanel.SetActive(true);
+            Show("ПОБЕДА!", crystalEarnedThisLevel);
         }
 
         public void ShowDefeat(int crystalEarnedThisLevel)
         {
-            _resultTitleText.text = "Поражение";
-            _crystalsEarnedText.text = $"+{crystalEarnedThisLevel} кристаллов";
+            Show("ПОРАЖЕНИЕ", crystalEarnedThisLevel);
+        }
+
+        public void ReturnToMenu()
+        {
+            GameSession.Instance.ReturnToMenu();
+        }
+
+        private void Show(string title, int crystals)
+        {
+            _resultTitleText.text = title;
+            _crystalsEarnedText.text = $"+{crystals} кристаллов";
             _rootPanel.SetActive(true);
         }
     }

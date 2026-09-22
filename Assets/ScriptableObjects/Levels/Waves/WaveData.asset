@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaveName: "\u0412\u043E\u043B\u043D\u0430 1"
   Contents:
-  - EnemyType: 1
+  - EnemyType: 2
     Count: 5
     DelayBetweenSpawns: 0.5
   - EnemyType: 2

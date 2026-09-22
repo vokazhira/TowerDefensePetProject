@@ -15,7 +15,7 @@ MonoBehaviour:
   Type: 2
   Prefab: {fileID: 3800520924150587389, guid: c09242b4fa4c2ff4f8aaf26fd115fea9, type: 3}
   Stats:
-    MaxHealth: 50
+    MaxHealth: 49
     MoveSpeed: 3
     ContactDamage: 10
     GoldReward: 10

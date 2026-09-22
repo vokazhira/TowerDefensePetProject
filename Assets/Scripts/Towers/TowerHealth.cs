@@ -1,75 +1,65 @@
 ﻿using System;
 using Game.Events.Observer;
 using Interfaces.Damage;
-using ScriptableObjectData.LevelSO;
 using UnityEngine;
 
 namespace Towers
 {
     public class TowerHealth : MonoBehaviour, IDamageable
     {
-        private float _maxHealth;
+        public float CurrentHealth { get; private set; }
+        public float MaxHealth {get; private set;}
+        
         private float _defense;
         private float _regeneration;
-
-        public float CurrentHealth { get; private set; }
-        public float MaxHealth => _maxHealth;
-        public float Defense => _defense;
+        
         public bool IsDead => CurrentHealth <= 0f;
         
         public event Action<float, float> OnHealthChanged;
 
-        public void Init(float maxHealth, float defense, float regeneration)
+        public void ConfigureAtLevelStart(TowerStats towerStats)
         {
-            _maxHealth = maxHealth;
-            _defense = defense;
-            _regeneration = regeneration;
-            RestoreFullHealth();
+            ApplyStats(towerStats);
+            CurrentHealth = MaxHealth;
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         }
 
-        private void OnEnable()
+        public void ApplyStats(TowerStats towerStats)
         {
-            GameEvents.OnLevelStarted += HandleLevelStarted;
-        }
-
-        private void OnDisable()
-        {
-            GameEvents.OnLevelStarted -= HandleLevelStarted;
+            MaxHealth = towerStats.MaxHealth;
+            _defense = towerStats.Defense;
+            _regeneration = towerStats.HealthRegeneration;
+            
+            CurrentHealth = Math.Min(CurrentHealth, MaxHealth);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
         }
 
         private void Update()
         {
-            if (IsDead || _regeneration <= 0f) return;
-
-            if (CurrentHealth < _maxHealth)
+            if (CurrentHealth < MaxHealth)
             {
-                SetHealth(CurrentHealth + _regeneration * Time.deltaTime);
+                CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + _regeneration * Time.deltaTime);
+                OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
             }
         }
 
         public void TakeDamage(float damage)
         {
-            if (IsDead) return;
-
+            if (IsDead)
+            {
+                return;
+            }
+            
             float finalDamage = Mathf.Max(0f, damage - _defense);
             if (finalDamage <= 0f) return;
 
-            SetHealth(CurrentHealth - finalDamage);
+            CurrentHealth = Mathf.Max(0f, CurrentHealth - finalDamage);
+            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
 
-            if (IsDead) GameEvents.NotifyTowerDestroyed();
-        }
-        
-        public void RestoreFullHealth()
-        {
-            SetHealth(_maxHealth);
-        }
-        
-        private void HandleLevelStarted(LevelData levelData) => RestoreFullHealth();
-
-        private void SetHealth(float value)
-        {
-            CurrentHealth = Mathf.Clamp(value, 0f, _maxHealth);
-            OnHealthChanged?.Invoke(CurrentHealth, _maxHealth);
+            if (CurrentHealth <= 0f)
+            {
+                GameEvents.NotifyTowerDestroyed();
+            }
         }
     }
 }

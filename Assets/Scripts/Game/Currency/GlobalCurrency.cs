@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using Game.Events.Observer;
 
 namespace Game.Currency
@@ -26,4 +26,4 @@ namespace Game.Currency
             GameEvents.OnCrystalsEarned -= HandleCrystalsChanged;
         }
     }
-}
+}*/

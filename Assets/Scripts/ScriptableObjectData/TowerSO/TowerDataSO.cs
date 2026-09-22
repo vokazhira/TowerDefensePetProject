@@ -11,6 +11,7 @@ namespace ScriptableObjectData.TowerSO
         public TowersType TowerType;
         public Sprite Sprite;
         public TowerStats TowerStats;
+        public TowerStatsMultiplier Multipliers;
         public Projectile Projectile;
     }
 }

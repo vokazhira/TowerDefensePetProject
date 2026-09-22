@@ -26,5 +26,31 @@ namespace Towers
         public int WaveCrystalReward;
         public int GoldPerKillBonus;
         public float FreeUpgradeChance;
+
+        public TowerStats Copy()
+        {
+            return new TowerStats()
+            {
+                Damage = Damage,
+                AttackSpeed = AttackSpeed,
+                Range = Range,
+                MultishotChance = MultishotChance,
+                CritChance = CritChance,
+                CritMultiplier = CritMultiplier,
+
+                MaxHealth = MaxHealth,
+                HealthRegeneration = HealthRegeneration,
+                Defense = Defense,
+                VampirismChance = VampirismChance,
+                VampirismMultiplier = VampirismMultiplier,
+
+                WaveGoldReward = WaveGoldReward,
+                WaveCrystalReward = WaveCrystalReward,
+                GoldPerKillBonus = GoldPerKillBonus,
+                FreeUpgradeChance = FreeUpgradeChance,
+            };
+            
+            //TODO: сделать с ICloneable
+        }
     }
 }
