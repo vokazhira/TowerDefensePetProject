@@ -1,5 +1,5 @@
 ﻿using Game.Currency;
-using Game.Events.Observer;
+using Game.Events;
 using ScriptableObjectData.LevelSO;
 using Towers;
 using UI;
@@ -12,24 +12,17 @@ namespace Game.Waves
         [SerializeField] private WaveSystem _waveSystem;
         [SerializeField] private LevelView _levelView;
         [SerializeField] private LevelResultPanel _resultPanel;
-
-        private GameCurrency _gameCurrency;
-
-        public void Init(GameCurrency currency)
-        {
-            _gameCurrency = currency;
-        }
         
         private void OnEnable()
         {
-            GameEvents.OnAllWavesCompleted += HandleVictory;
-            GameEvents.OnTowerDestroyed += HandleDefeat;
+            EventBus.Subscribe<AllWavesCompleted>(HandleVictory);
+            EventBus.Subscribe<TowerDestroyed>(HandleDefeat);
         }
 
         private void OnDisable()
         {
-            GameEvents.OnAllWavesCompleted -= HandleVictory;
-            GameEvents.OnTowerDestroyed -= HandleDefeat;
+            EventBus.Unsubscribe<AllWavesCompleted>(HandleVictory);
+            EventBus.Unsubscribe<TowerDestroyed>(HandleDefeat);
         }
 
         public void StartSelectedLevel()
@@ -45,7 +38,7 @@ namespace Game.Waves
             _resultPanel.Hide();
             _levelView.Show();
             
-            GameEvents.NotifyLevelStarted(levelData);
+            EventBus.Invoke<LevelData>(levelData);
             _waveSystem.StartLevel(levelData);
         }
         

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Enemies;
-using Game.Events.Observer;
+using Game.Currency;
+using Game.Events;
 using ScriptableObjectData.LevelSO;
 using ScriptableObjectData.WaveSO;
 using UnityEngine;
@@ -22,12 +23,12 @@ namespace Game.Waves
 
         private void OnEnable()
         {
-            GameEvents.OnEnemyDied += OnEnemydied;
+            EventBus.Subscribe<EnemyDied>(OnEnemydied);
         }
 
         private void OnDisable()
         {
-            GameEvents.OnEnemyDied -= OnEnemydied;
+            EventBus.Unsubscribe<EnemyDied>(OnEnemydied);
         }
 
         public void StartLevel(LevelData level)
@@ -57,8 +58,8 @@ namespace Game.Waves
             {
                 WaveData wave = _currentLevel.Waves[_currentWaveIndex];
                 yield return new WaitForSeconds(wave.DelayBeforeWave);
-                
-                GameEvents.NotifyWaveProgressChanged(_currentWaveIndex + 1, _currentLevel.Waves.Count);
+
+                EventBus.Invoke<WaveChange>(new WaveChange(_currentWaveIndex + 1, _currentLevel.Waves.Count));
                 
                 yield return StartCoroutine(SpawnWave(wave));
                 
@@ -66,16 +67,16 @@ namespace Game.Waves
 
                 int crystalForWave = _currentLevel.CrystalPerWave;
                 _crystalEarnedThisLevel += crystalForWave;
-                GameEvents.NotifyCrystalsEarned(crystalForWave);
+                EventBus.Invoke<CrystalsEarned>(new CrystalsEarned(crystalForWave));
                 
                 _currentWaveIndex++;
             }
 
             int fullClearBonus = _crystalEarnedThisLevel;
             _crystalEarnedThisLevel += fullClearBonus;
-            GameEvents.NotifyCrystalsEarned(fullClearBonus);
-            
-            GameEvents.NotifyAllWavesCompleted();
+            EventBus.Invoke(new CrystalsEarned(fullClearBonus));
+
+            EventBus.Invoke(new AllWavesCompleted());
             _isRunning = false;
             _currentLevel = null;
         }
@@ -99,9 +100,23 @@ namespace Game.Waves
             _isSpawning = false;
         }
 
-        private void OnEnemydied(Enemy enemy)
+        private void OnEnemydied(EnemyDied died)
         {
             _aliveEnemies = Mathf.Max(0, _aliveEnemies - 1);
         }
     }
+
+    public struct WaveChange
+    {
+        public int Current;
+        public int Total;
+
+        public WaveChange(int current, int total)
+        {
+            Current = current;
+            Total = total;
+        }
+    }
+    
+    public struct AllWavesCompleted{}
 }

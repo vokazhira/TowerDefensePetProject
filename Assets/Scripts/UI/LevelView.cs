@@ -1,5 +1,6 @@
 ﻿using Game.Currency;
-using Game.Events.Observer;
+using Game.Events;
+using Game.Waves;
 using ScriptableObjectData.LevelSO;
 using TMPro;
 using Towers;
@@ -11,8 +12,6 @@ namespace UI
     public class LevelView : MonoBehaviour
     {
         [SerializeField] private GameObject _rootPanel;
-        [SerializeField] private TowerHealth _towerHealth;
-        
         [SerializeField] private TMP_Text _levelNameText;
         [SerializeField] private TMP_Text _waveProgressText;
         [SerializeField] private TMP_Text _towerHealthText;
@@ -33,16 +32,16 @@ namespace UI
         
         private void OnEnable()
         {
-            GameEvents.OnLevelStarted += HandleLevelStarted;
-            GameEvents.OnWaveProgressChanged += HandleWaveProgress;
-            _towerHealth.OnHealthChanged += HandleTowerHealthChanged;
+            EventBus.Subscribe<HealthChange>(HandleTowerHealthChanged);
+            EventBus.Subscribe<WaveChange>(HandleWaveProgress);
+            EventBus.Subscribe<LevelData>(HandleLevelStarted);
         }
 
         private void OnDisable()
         {
-            GameEvents.OnLevelStarted -= HandleLevelStarted;
-            GameEvents.OnWaveProgressChanged -= HandleWaveProgress;
-            _towerHealth.OnHealthChanged -= HandleTowerHealthChanged;
+            EventBus.Unsubscribe<HealthChange>(HandleTowerHealthChanged);
+            EventBus.Unsubscribe<WaveChange>(HandleWaveProgress);
+            EventBus.Unsubscribe<LevelData>(HandleLevelStarted);
         }
         
         public void Show() => _rootPanel.SetActive(true);
@@ -52,27 +51,23 @@ namespace UI
         {
             HandleGoldChanged(_gameCurrency.Gold);
             HandleCrystalChanged(_gameCurrency.CrystalsThisLevel);
-            
-            HandleTowerHealthChanged(_towerHealth.CurrentHealth, _towerHealth.MaxHealth);
         }
 
         private void HandleLevelStarted(LevelData level)
         {
             _levelNameText.text = level.LevelName;
             _waveProgressText.text = $"Волна 0/{level.Waves.Count}";
-            
-            HandleTowerHealthChanged(_towerHealth.CurrentHealth, _towerHealth.MaxHealth);
         }
 
-        private void HandleWaveProgress(int currentWave, int totalWaves)
+        private void HandleWaveProgress(WaveChange wave)
         {
-            _waveProgressText.text = $"Волна {currentWave}/{totalWaves}";
+            _waveProgressText.text = $"Волна {wave.Current}/{wave.Total}";
         }
 
-        private void HandleTowerHealthChanged(float current, float max)
+        private void HandleTowerHealthChanged(HealthChange health)
         {
-            _towerHealthText.text = $"{Mathf.CeilToInt(current)}/{Mathf.CeilToInt(max)}";
-            _towerHealthBar.fillAmount = current / max;
+            _towerHealthText.text = $"{Mathf.CeilToInt(health.Current)}/{Mathf.CeilToInt(health.Max)}";
+            _towerHealthBar.fillAmount = health.Current / health.Max;
         }
         
         private void HandleGoldChanged(int gold) => _goldText.text = gold.ToString();

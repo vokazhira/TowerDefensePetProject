@@ -1,5 +1,5 @@
 ﻿using System;
-using Game.Events.Observer;
+using Game.Events;
 
 namespace Game.Currency
 {
@@ -13,8 +13,8 @@ namespace Game.Currency
 
         public GameCurrency()
         {
-            GameEvents.OnGoldEarned += AddGold;
-            GameEvents.OnCrystalsEarned += AddCrystals;
+            EventBus.Subscribe<GoldEarned>(AddGold);
+            EventBus.Subscribe<CrystalsEarned>(AddCrystals);
         }
 
         public bool TrySpendGold(int amount)
@@ -25,22 +25,34 @@ namespace Game.Currency
             return true;
         }
         
-        private void AddGold(int amount)
+        private void AddGold(GoldEarned earned)
         {
-            Gold += amount;
+            Gold += earned.Amount;
             OnGoldChanged?.Invoke(Gold);
         }
 
-        private void AddCrystals(int amount)
+        private void AddCrystals(CrystalsEarned earned)
         {
-            CrystalsThisLevel += amount;
+            CrystalsThisLevel += earned.Amount;
             OnCrystalsChanged?.Invoke(CrystalsThisLevel);
         }
 
         public void Dispose()
         {
-            GameEvents.OnGoldEarned -= AddGold;
-            GameEvents.OnCrystalsEarned -= AddCrystals;
+            EventBus.Unsubscribe<GoldEarned>(AddGold);
+            EventBus.Unsubscribe<CrystalsEarned>(AddCrystals);
         }
+    }
+    
+    public struct GoldEarned
+    {
+        public int Amount;
+        public GoldEarned(int amount) => Amount = amount;
+    }
+
+    public struct CrystalsEarned
+    {
+        public int Amount;
+        public CrystalsEarned(int amount) => Amount = amount;
     }
 }

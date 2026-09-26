@@ -1,4 +1,5 @@
-﻿using ScriptableObjectData.LevelSO;
+﻿using Game.Events;
+using ScriptableObjectData.LevelSO;
 using UI;
 using UnityEngine;
 

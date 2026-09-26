@@ -1,5 +1,5 @@
 ﻿using System;
-using Game.Events.Observer;
+using Game.Events;
 using Interfaces.Damage;
 using UnityEngine;
 
@@ -14,14 +14,12 @@ namespace Towers
         private float _regeneration;
         
         public bool IsDead => CurrentHealth <= 0f;
-        
-        public event Action<float, float> OnHealthChanged;
 
         public void ConfigureAtLevelStart(TowerStats towerStats)
         {
             ApplyStats(towerStats);
             CurrentHealth = MaxHealth;
-            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            EventBus.Invoke(new HealthChange(CurrentHealth, MaxHealth));
         }
 
         public void ApplyStats(TowerStats towerStats)
@@ -31,7 +29,7 @@ namespace Towers
             _regeneration = towerStats.HealthRegeneration;
             
             CurrentHealth = Math.Min(CurrentHealth, MaxHealth);
-            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            EventBus.Invoke(new HealthChange(CurrentHealth, MaxHealth));
         }
 
         private void Update()
@@ -39,7 +37,7 @@ namespace Towers
             if (CurrentHealth < MaxHealth)
             {
                 CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + _regeneration * Time.deltaTime);
-                OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+                EventBus.Invoke(new HealthChange(CurrentHealth, MaxHealth));
             }
         }
 
@@ -54,12 +52,31 @@ namespace Towers
             if (finalDamage <= 0f) return;
 
             CurrentHealth = Mathf.Max(0f, CurrentHealth - finalDamage);
-            OnHealthChanged?.Invoke(CurrentHealth, MaxHealth);
+            EventBus.Invoke(new HealthChange(CurrentHealth, MaxHealth));
 
             if (CurrentHealth <= 0f)
             {
-                GameEvents.NotifyTowerDestroyed();
+                EventBus.Invoke<TowerDestroyed>(new TowerDestroyed());
             }
         }
+
+        public void Heal()
+        {
+            
+        }
     }
+    
+    public struct HealthChange
+    {
+        public float Current;
+        public float Max;
+
+        public HealthChange(float current, float max)
+        {
+            Current = current;
+            Max = max;
+        }
+    }
+    
+    public struct TowerDestroyed{}
 }

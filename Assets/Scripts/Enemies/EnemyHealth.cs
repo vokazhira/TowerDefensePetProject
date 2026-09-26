@@ -1,4 +1,5 @@
-﻿using Game.Events.Observer;
+﻿using Game.Currency;
+using Game.Events;
 using Interfaces.Damage;
 using Lean.Pool;
 using UnityEngine;
@@ -43,8 +44,8 @@ namespace Enemies
 
             if (_owner != null && _owner.Stats != null)
             {
-                GameEvents.NotifyGoldEarned(_owner.Stats.GoldReward);
-                GameEvents.NotifyEnemyDied(_owner);
+                EventBus.Invoke<GoldEarned>(new GoldEarned(_owner.Stats.GoldReward));
+                EventBus.Invoke<EnemyDied>(new EnemyDied(_owner));
             }
             
             LeanPool.Despawn(this.gameObject);
@@ -54,6 +55,16 @@ namespace Enemies
         {
             _isDead = false;
             _owner = null;
+        }
+    }
+
+    public struct EnemyDied
+    {
+        public Enemy Enemy;
+
+        public EnemyDied(Enemy enemy)
+        {
+            Enemy = enemy;
         }
     }
 }
