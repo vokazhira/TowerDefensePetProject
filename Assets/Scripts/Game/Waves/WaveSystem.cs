@@ -2,6 +2,7 @@
 using Enemies;
 using Game.Currency;
 using Game.Events;
+using Interfaces;
 using ScriptableObjectData.LevelSO;
 using ScriptableObjectData.WaveSO;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace Game.Waves
         [SerializeField] private EnemySpawner _spawner;
         
         private LevelData _currentLevel;
+        private IResourceRewardSource _rewards;
         private int _currentWaveIndex;
         private int _aliveEnemies;
         private bool _isSpawning;
@@ -31,11 +33,12 @@ namespace Game.Waves
             EventBus.Unsubscribe<EnemyDied>(OnEnemydied);
         }
 
-        public void StartLevel(LevelData level)
+        public void StartLevel(LevelData level, IResourceRewardSource rewards)
         {
             if (_isRunning || level == null || level.Waves.Count == 0) return;
             
             _currentLevel = level;
+            _rewards = rewards;
             _isRunning = true;
             _currentWaveIndex = 0;
             _aliveEnemies = 0;
@@ -65,9 +68,7 @@ namespace Game.Waves
                 
                 yield return new WaitUntil(() => _aliveEnemies <= 0 && !_isSpawning);
 
-                int crystalForWave = _currentLevel.CrystalPerWave;
-                _crystalEarnedThisLevel += crystalForWave;
-                EventBus.Invoke<CrystalsEarned>(new CrystalsEarned(crystalForWave));
+                GetWaveRewards();
                 
                 _currentWaveIndex++;
             }
@@ -79,6 +80,22 @@ namespace Game.Waves
             EventBus.Invoke(new AllWavesCompleted());
             _isRunning = false;
             _currentLevel = null;
+        }
+
+        private void GetWaveRewards()
+        {
+            int crystalBonus = _rewards != null ? _rewards.WaveCrystalReward : 0;
+            int crystalForWave = _currentLevel.CrystalPerWave + crystalBonus;
+            
+            _crystalEarnedThisLevel += crystalForWave;
+            EventBus.Invoke<CrystalsEarned>(new CrystalsEarned(crystalForWave));
+            
+            int goldForWave = _rewards != null ? _rewards.WaveGoldReward : 0;
+
+            if (goldForWave > 0)
+            {  
+                EventBus.Invoke<GoldEarned>(new GoldEarned(goldForWave));
+            }
         }
 
         private IEnumerator SpawnWave(WaveData wave)
@@ -103,6 +120,10 @@ namespace Game.Waves
         private void OnEnemydied(EnemyDied died)
         {
             _aliveEnemies = Mathf.Max(0, _aliveEnemies - 1);
+
+            int killBonus = _rewards != null ? _rewards.GoldPerKillBonus : 0;
+            
+            if (killBonus > 0) EventBus.Invoke<GoldEarned>(new GoldEarned(killBonus));
         }
     }
 

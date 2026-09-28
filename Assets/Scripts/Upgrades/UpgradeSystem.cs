@@ -7,6 +7,8 @@ using ScriptableObjectData.TowerSO;
 using Towers;
 using UnityEngine;
 using UnityEngine.UI;
+using Upgrades.Prices;
+using Random = UnityEngine.Random;
 
 namespace Upgrades
 {
@@ -17,6 +19,7 @@ namespace Upgrades
         
         public event Action<TowerStatType> OnUpgradeChanged;
 
+        private UpgradePriceCatalog _priceCatalog = new UpgradePriceCatalog();
         private GameCurrency _gameCurrency;
         private Dictionary<TowerStatType, int> _battleLevels = new Dictionary<TowerStatType, int>();
 
@@ -43,7 +46,7 @@ namespace Upgrades
                 boughtCount = _battleLevels[statType];
             }
             
-            return UpgradePriceCalculator.GetPrice(boughtCount);
+            return _priceCatalog.GetPrice(statType, boughtCount);
         }
 
         public bool CanBuy(TowerStatType statType)
@@ -75,9 +78,9 @@ namespace Upgrades
             }
             else
             {
-                if (!_gameCurrency.TrySpendGold(price))
+                if (!RollFreeUpgrade())
                 {
-                    return;
+                    _gameCurrency.TrySpendGold(price);
                 }
                 
                 _battleLevels[statType]++;
@@ -94,7 +97,17 @@ namespace Upgrades
                 return $"Ур.: {GameSession.Instance.GetPermanentLevel(statType)}";
             }
             
-            return $"{_towerRuntimeStats.GetValue(statType):0.##}";
+            float value = _towerRuntimeStats.GetValue(statType);
+            
+            return statType == TowerStatType.FreeUpgradeChance
+                ? $"{value:0.##}%"
+                : $"{value:0.##}";
+        }
+        
+        private bool RollFreeUpgrade()
+        {
+            float chancePercent = _towerRuntimeStats.Stats.FreeUpgradeChance;
+            return chancePercent > 0f && Random.Range(0f, 100f) < chancePercent;
         }
     }
 }

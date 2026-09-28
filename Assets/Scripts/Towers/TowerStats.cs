@@ -49,8 +49,6 @@ namespace Towers
                 GoldPerKillBonus = GoldPerKillBonus,
                 FreeUpgradeChance = FreeUpgradeChance,
             };
-            
-            //TODO: сделать с ICloneable
         }
     }
 }

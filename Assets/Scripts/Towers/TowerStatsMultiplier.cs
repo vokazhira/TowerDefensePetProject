@@ -21,6 +21,10 @@ namespace Towers
         public float VampirismChance;
         public float VampirismMultiplier;
         
-        //TODO: доделать ресурс статы
+        [Header("Resource stats")]
+        public int WaveGoldReward = 1;
+        public int WaveCrystalReward = 1;
+        public int GoldPerKillBonus = 1;
+        public float FreeUpgradeChance = 0.25f;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Game.Currency;
 using Game.Events;
+using Interfaces;
 using ScriptableObjectData.LevelSO;
 using Towers;
 using UI;
@@ -25,7 +26,7 @@ namespace Game.Waves
             EventBus.Unsubscribe<TowerDestroyed>(HandleDefeat);
         }
 
-        public void StartSelectedLevel()
+        public void StartSelectedLevel(IResourceRewardSource rewards)
         {
             LevelData levelData = GameSession.Instance.SelectedLevel;
 
@@ -39,7 +40,7 @@ namespace Game.Waves
             _levelView.Show();
             
             EventBus.Invoke<LevelData>(levelData);
-            _waveSystem.StartLevel(levelData);
+            _waveSystem.StartLevel(levelData, rewards);
         }
         
         public void HandleVictory()

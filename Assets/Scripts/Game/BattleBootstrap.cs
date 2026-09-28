@@ -28,7 +28,7 @@ namespace Game
             _levelView.Init(_gameCurrency);
             _battleUpgradePanel.Init(_gameCurrency);
             
-            _levelController.StartSelectedLevel();
+            _levelController.StartSelectedLevel(_towerRuntimeStats);
         }
 
         private void OnDestroy()

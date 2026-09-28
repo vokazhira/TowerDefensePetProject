@@ -1,14 +1,19 @@
 ﻿using System;
 using Game;
+using Interfaces;
 using ScriptableObjectData.TowerSO;
 using UnityEngine;
 
 namespace Towers
 {
-    public class TowerRuntimeStats : MonoBehaviour
+    public class TowerRuntimeStats : MonoBehaviour, IResourceRewardSource
     {
         public TowerStats Stats {get; private set;}
         public TowerDataSO TowerData {get; private set;}
+        
+        public int WaveGoldReward => Stats.WaveGoldReward;
+        public int WaveCrystalReward => Stats.WaveCrystalReward;
+        public int GoldPerKillBonus => Stats.GoldPerKillBonus;
         
         public event Action<TowerStatType> OnStatChange;
         
@@ -75,10 +80,10 @@ namespace Towers
                 case TowerStatType.VampirismChance: Stats.VampirismChance += multiplier.VampirismChance; break;
                 case TowerStatType.VampirismMultiplier: Stats.VampirismMultiplier += multiplier.VampirismMultiplier; break;
                     
-                case TowerStatType.WaveGoldReward: break;
-                case TowerStatType.WaveCrystalReward: break;
-                case TowerStatType.GoldPerKillBonus:  break;
-                case TowerStatType.FreeUpgradeChance: break;
+                case TowerStatType.WaveGoldReward: Stats.WaveGoldReward += multiplier.WaveGoldReward; break;
+                case TowerStatType.WaveCrystalReward: Stats.WaveCrystalReward += multiplier.WaveCrystalReward; break;
+                case TowerStatType.GoldPerKillBonus: Stats.GoldPerKillBonus += multiplier.GoldPerKillBonus; break;
+                case TowerStatType.FreeUpgradeChance: Stats.FreeUpgradeChance += multiplier.FreeUpgradeChance; break;
             }
         }
     }
