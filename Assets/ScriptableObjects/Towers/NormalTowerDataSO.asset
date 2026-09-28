@@ -16,7 +16,7 @@ MonoBehaviour:
   TowerType: 0
   Sprite: {fileID: 21300000, guid: 7295007a4f71b1d48a13b13b05491cd7, type: 3}
   TowerStats:
-    Damage: 1
+    Damage: 50
     AttackSpeed: 3
     Range: 25
     MultishotChance: 0
@@ -43,4 +43,8 @@ MonoBehaviour:
     Defense: 1
     VampirismChance: 0
     VampirismMultiplier: 0
+    WaveGoldReward: 1
+    WaveCrystalReward: 1
+    GoldPerKillBonus: 1
+    FreeUpgradeChance: 0.25
   Projectile: {fileID: 4505351148469685283, guid: 4022825666010314f9d7965e5fa7b50f, type: 3}
