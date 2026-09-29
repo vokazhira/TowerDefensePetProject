@@ -984,7 +984,6 @@ GameObject:
   - component: {fileID: 383522654}
   - component: {fileID: 383522658}
   - component: {fileID: 383522657}
-  - component: {fileID: 383522656}
   - component: {fileID: 383522655}
   m_Layer: 5
   m_Name: BattleUpgradePanel
@@ -1042,20 +1041,6 @@ MonoBehaviour:
   - {fileID: 1397758650}
   - {fileID: 775440160}
   - {fileID: 17924786}
---- !u!114 &383522656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 383522653}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94f2b4069428449bbf3de6cd7988f2cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mode: 1
-  _towerRuntimeStats: {fileID: 210866748}
 --- !u!114 &383522657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1526,7 +1511,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rootPanel: {fileID: 1407922503}
-  _towerHealth: {fileID: 1469506622}
   _levelNameText: {fileID: 293557}
   _waveProgressText: {fileID: 137459279}
   _towerHealthText: {fileID: 1259120862}
@@ -3574,17 +3558,6 @@ Transform:
   - {fileID: 648552289}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1469506622 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4449225646443356038, guid: 4b3973dec2e93a34d8fd485c8f70b09c, type: 3}
-  m_PrefabInstance: {fileID: 210866746}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e38006e3fbe64082b62173a4cb14317a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &1469506623 stripped
 CircleCollider2D:
   m_CorrespondingSourceObject: {fileID: 7447890841667027218, guid: 4b3973dec2e93a34d8fd485c8f70b09c, type: 3}
@@ -4384,6 +4357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mode: 1
   _towerRuntimeStats: {fileID: 210866748}
+  _towerData: {fileID: 0}
 --- !u!1 &2000678984
 GameObject:
   m_ObjectHideFlags: 0

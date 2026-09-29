@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game;
+using Game.Chances;
 using Game.Currency;
-using Game.States;
 using ScriptableObjectData.TowerSO;
 using Towers;
 using UnityEngine;
-using UnityEngine.UI;
 using Upgrades.Prices;
-using Random = UnityEngine.Random;
 
 namespace Upgrades
 {
@@ -16,13 +14,15 @@ namespace Upgrades
     {
         [SerializeField] private UpgradeMode _mode;
         [SerializeField] private TowerRuntimeStats _towerRuntimeStats;
+        [SerializeField] private TowerDataSO _towerData;
         
         public event Action<TowerStatType> OnUpgradeChanged;
 
         private UpgradePriceCatalog _priceCatalog = new UpgradePriceCatalog();
-        private GameCurrency _gameCurrency;
+        private IChanceRoller _chanceRoller = new ChanceRoller();
         private Dictionary<TowerStatType, int> _battleLevels = new Dictionary<TowerStatType, int>();
-
+        private GameCurrency _gameCurrency;
+        
         public void Init(GameCurrency gameCurrency)
         {
             _gameCurrency = gameCurrency;
@@ -35,53 +35,42 @@ namespace Upgrades
 
         public int GetPrice(TowerStatType statType)
         {
-            int boughtCount;
-            
-            if (_mode == UpgradeMode.Permanent)
-            {
-                boughtCount = GameSession.Instance.GetPermanentLevel(statType);
-            }
-            else
-            {
-                boughtCount = _battleLevels[statType];
-            }
-            
-            return _priceCatalog.GetPrice(statType, boughtCount);
+            return _priceCatalog.GetPrice(statType, GetBoughtCount(statType));
         }
 
         public bool CanBuy(TowerStatType statType)
         {
+            if (IsMaxed(statType)) return false;
+            
             int price = GetPrice(statType);
+            
+            return _mode == UpgradeMode.Permanent
+                ? GameSession.Instance.TotalCrystals >= price
+                : _gameCurrency.Gold >= price;
+        }
 
-            if (_mode == UpgradeMode.Permanent)
-            {
-                return GameSession.Instance.TotalCrystals >= price;
-            }
-            else
-            {
-                return _gameCurrency.Gold >= price;
-            }
+        public bool IsMaxed(TowerStatType statType)
+        {
+            return TowerStatRules.IsMaxed(statType, GetCurrentValue(statType));
         }
 
         public void TryUpgrade(TowerStatType statType)
         {
+            if (!CanBuy(statType)) return;
+            
             int price = GetPrice(statType);
 
             if (_mode == UpgradeMode.Permanent)
             {
-                if (!GameSession.Instance.TrySpendCrystals(price))
-                {
-                    return;
-                }
+                if (!GameSession.Instance.TrySpendCrystals(price)) return;
                 
                 GameSession.Instance.IncreasePermanentLevel(statType);
             }
             else
             {
-                if (!RollFreeUpgrade())
-                {
-                    _gameCurrency.TrySpendGold(price);
-                }
+                bool isFree = RollFreeUpgrade();
+                
+                if (!isFree && !_gameCurrency.TrySpendGold(price)) return;
                 
                 _battleLevels[statType]++;
                 _towerRuntimeStats.UpgradeForCurrentLevel(statType);
@@ -97,17 +86,43 @@ namespace Upgrades
                 return $"Ур.: {GameSession.Instance.GetPermanentLevel(statType)}";
             }
             
-            float value = _towerRuntimeStats.GetValue(statType);
+            return TowerStatRules.Format(statType, GetCurrentValue(statType));
+        }
+
+        public float GetCurrentValue(TowerStatType statType)
+        {
+            return _mode == UpgradeMode.Battle
+                ? _towerRuntimeStats.GetValue(statType)
+                : CalculatePermanentValue(statType);
+        }
+
+        private int GetBoughtCount(TowerStatType statType)
+        {
+            return _mode == UpgradeMode.Permanent
+                ? GameSession.Instance.GetPermanentLevel(statType)
+                : _battleLevels[statType];
+        }
+
+        private float CalculatePermanentValue(TowerStatType statType)
+        {
+            if (_towerData == null) return 0f;
+
+            TowerStats preview = _towerData.TowerStats.Copy();
+            preview.ClampToLimits();
             
-            return statType == TowerStatType.FreeUpgradeChance
-                ? $"{value:0.##}%"
-                : $"{value:0.##}";
+            int level = GameSession.Instance.GetPermanentLevel(statType);
+
+            for (int i = 0; i < level; i++)
+            {
+                preview.Upgrade(statType, _towerData.Multipliers);
+            }
+
+            return preview.Get(statType);
         }
         
         private bool RollFreeUpgrade()
         {
-            float chancePercent = _towerRuntimeStats.Stats.FreeUpgradeChance;
-            return chancePercent > 0f && Random.Range(0f, 100f) < chancePercent;
+            return _chanceRoller.Roll(_towerRuntimeStats.Stats.FreeUpgradeChance);
         }
     }
 }

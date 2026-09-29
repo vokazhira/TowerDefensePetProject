@@ -28,8 +28,10 @@ namespace UI
 
         public void Refresh()
         {
+            bool isMaxed = _upgradeSystem.IsMaxed(_statType);
+            
             _nameText.text = GetName(_statType);
-            _priceText.text = $"Цена: {_upgradeSystem.GetPrice(_statType)}";
+            _priceText.text = isMaxed ? "MAX" : $"Цена: {_upgradeSystem.GetPrice(_statType)}";
             _valueText.text = _upgradeSystem.GetValueText(_statType);
             
             bool canBuy = _upgradeSystem.CanBuy(_statType);

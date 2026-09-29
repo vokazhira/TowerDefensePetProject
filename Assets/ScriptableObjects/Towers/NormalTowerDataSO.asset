@@ -21,12 +21,12 @@ MonoBehaviour:
     Range: 25
     MultishotChance: 0
     CritChance: 0
-    CritMultiplier: 0
+    CritMultiplier: 1.5
     MaxHealth: 100
     HealthRegeneration: 1
     Defense: 0
-    VampirismChance: 0
-    VampirismMultiplier: 0
+    VampirismChance: 1
+    VampirismMultiplier: 0.25
     WaveGoldReward: 0
     WaveCrystalReward: 0
     GoldPerKillBonus: 0
@@ -37,12 +37,12 @@ MonoBehaviour:
     Range: 0.3
     MultishotChance: 1
     CritChance: 1
-    CritMultiplier: 1
+    CritMultiplier: 0.5
     MaxHealth: 16
     HealthRegeneration: 1
     Defense: 1
-    VampirismChance: 0
-    VampirismMultiplier: 0
+    VampirismChance: 0.25
+    VampirismMultiplier: 0.25
     WaveGoldReward: 1
     WaveCrystalReward: 1
     GoldPerKillBonus: 1

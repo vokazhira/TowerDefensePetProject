@@ -886,6 +886,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _mode: 0
   _towerRuntimeStats: {fileID: 0}
+  _towerData: {fileID: 11400000, guid: 6aa75cdcbb0f53b4ba3755b3955b0055, type: 2}
 --- !u!114 &343323011
 MonoBehaviour:
   m_ObjectHideFlags: 0
