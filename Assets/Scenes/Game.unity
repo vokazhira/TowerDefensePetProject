@@ -824,6 +824,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad2187ebcf224faf8e0460207c318c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &210866749 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4449225646443356038, guid: 4b3973dec2e93a34d8fd485c8f70b09c, type: 3}
+  m_PrefabInstance: {fileID: 210866746}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e38006e3fbe64082b62173a4cb14317a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &296546634
 GameObject:
   m_ObjectHideFlags: 0
@@ -1183,6 +1194,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1024092609}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &460401969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 460401970}
+  - component: {fileID: 460401971}
+  m_Layer: 0
+  m_Name: PopupSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &460401970
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460401969}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1024092609}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &460401971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 460401969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf2be77da964e9481bb87d248185355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupPrefab: {fileID: 2869105872338294644, guid: 28347798c84aae549922eb3082515fda, type: 3}
+  _freeUpgradeTransform: {fileID: 615464409}
+  _offset: {x: 0, y: 0.5, z: 0}
 --- !u!1 &541098556
 GameObject:
   m_ObjectHideFlags: 0
@@ -1230,6 +1288,7 @@ MonoBehaviour:
   _normalTowerData: {fileID: 11400000, guid: 6aa75cdcbb0f53b4ba3755b3955b0055, type: 2}
   _towerRuntimeStats: {fileID: 210866748}
   _towerLogic: {fileID: 210866747}
+  _towerHealth: {fileID: 210866749}
   _levelController: {fileID: 435639650}
   _levelView: {fileID: 693009363}
   _battleUpgradePanel: {fileID: 383522655}
@@ -2216,6 +2275,7 @@ Transform:
   - {fileID: 435639651}
   - {fileID: 1906865877}
   - {fileID: 541098557}
+  - {fileID: 460401970}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1033284243

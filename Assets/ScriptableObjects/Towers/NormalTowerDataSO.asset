@@ -17,20 +17,20 @@ MonoBehaviour:
   Sprite: {fileID: 21300000, guid: 7295007a4f71b1d48a13b13b05491cd7, type: 3}
   TowerStats:
     Damage: 50
-    AttackSpeed: 3
+    AttackSpeed: 2
     Range: 25
-    MultishotChance: 0
-    CritChance: 0
-    CritMultiplier: 1.5
+    MultishotChance: 99
+    CritChance: 99
+    CritMultiplier: 3
     MaxHealth: 100
     HealthRegeneration: 1
     Defense: 0
-    VampirismChance: 1
+    VampirismChance: 99
     VampirismMultiplier: 0.25
     WaveGoldReward: 0
     WaveCrystalReward: 0
     GoldPerKillBonus: 0
-    FreeUpgradeChance: 0
+    FreeUpgradeChance: 95
   Multipliers:
     Damage: 1
     AttackSpeed: 0.5

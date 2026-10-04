@@ -26,12 +26,13 @@ namespace Towers
         private Coroutine _shootRoutine;
         private Enemy _currentTarget;
 
-        public void Init(TowerRuntimeStats runtimeStats)
+        public void Init(TowerRuntimeStats runtimeStats, TowerDamageDealer damageDealer)
         {
             _runtimeStats = runtimeStats;
+            _damageDealer = damageDealer;
             _towerHealth = GetComponent<TowerHealth>();
             _chanceRoller = new ChanceRoller();
-            _damageDealer = CreateDamageDealer();
+            
             
             _towerHealth.ConfigureAtLevelStart(_runtimeStats.Stats);
             _rangeCollider.isTrigger = true;
@@ -152,21 +153,6 @@ namespace Towers
             {
                 _towerHealth.ApplyStats(_runtimeStats.Stats);
             }
-        }
-        
-        private TowerDamageDealer CreateDamageDealer()
-        {
-            List<IDamageModifier> damageModifiers = new List<IDamageModifier>
-            {
-                new CritDamageModifier(_chanceRoller),
-            };
-
-            List<IHitEffect> hitEffects = new List<IHitEffect>
-            {
-                new VampirismHitEffect(_towerHealth, _chanceRoller),
-            };
-
-            return new TowerDamageDealer(_runtimeStats, damageModifiers, hitEffects);
         }
 
         private void OnDestroy()

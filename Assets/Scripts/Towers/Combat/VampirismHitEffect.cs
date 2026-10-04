@@ -14,7 +14,7 @@ namespace Towers.Combat
             _chanceRoller = chanceRoller;
         }
         
-        public void Apply(in HitContext context)
+        public void Apply(HitContext context)
         {
             if (context.Stats.VampirismMultiplier <= 0f) return;
             if (!_chanceRoller.Roll(context.Stats.VampirismChance)) return;

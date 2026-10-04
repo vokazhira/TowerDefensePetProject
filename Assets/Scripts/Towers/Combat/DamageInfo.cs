@@ -2,8 +2,8 @@
 {
     public readonly struct DamageInfo
     {
-        public readonly float Amount;
-        public readonly bool IsCritical;
+        public float Amount { get; }
+        public bool IsCritical { get; }
 
         public DamageInfo(float amount, bool isCritical = false)
         {

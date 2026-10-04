@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using Game;
 using Game.Chances;
 using Game.Currency;
+using Game.Events;
 using ScriptableObjectData.TowerSO;
 using Towers;
+using UI.Popups;
 using UnityEngine;
 using Upgrades.Prices;
 
@@ -74,6 +76,11 @@ namespace Upgrades
                 
                 _battleLevels[statType]++;
                 _towerRuntimeStats.UpgradeForCurrentLevel(statType);
+
+                if (isFree)
+                {
+                    EventBus.Invoke<FreeUpgradeReceived>(new FreeUpgradeReceived());
+                }
             }
             
             OnUpgradeChanged?.Invoke(statType);
@@ -98,8 +105,8 @@ namespace Upgrades
 
         private int GetBoughtCount(TowerStatType statType)
         {
-            return _mode == UpgradeMode.Permanent
-                ? GameSession.Instance.GetPermanentLevel(statType)
+            return _mode == UpgradeMode.Permanent 
+                ? GameSession.Instance.GetPermanentLevel(statType) 
                 : _battleLevels[statType];
         }
 
