@@ -835,6 +835,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e38006e3fbe64082b62173a4cb14317a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!212 &210866750 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 9175731691653314535, guid: 4b3973dec2e93a34d8fd485c8f70b09c, type: 3}
+  m_PrefabInstance: {fileID: 210866746}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &296546634
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,7 +1290,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1433ff0774f4cf386836d19d296918e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _normalTowerData: {fileID: 11400000, guid: 6aa75cdcbb0f53b4ba3755b3955b0055, type: 2}
+  _defaultTowerData: {fileID: 11400000, guid: 6aa75cdcbb0f53b4ba3755b3955b0055, type: 2}
+  _towerSpriteRenderer: {fileID: 210866750}
   _towerRuntimeStats: {fileID: 210866748}
   _towerLogic: {fileID: 210866747}
   _towerHealth: {fileID: 210866749}

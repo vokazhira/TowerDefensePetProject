@@ -123,7 +123,7 @@ namespace Upgrades
             {
                 preview.Upgrade(statType, _towerData.Multipliers);
             }
-
+            
             return preview.Get(statType);
         }
         

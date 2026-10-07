@@ -8,6 +8,7 @@ namespace ScriptableObjectData.TowerSO
     public class TowerDataSO : ScriptableObject
     {
         public string TowerName;
+        [TextArea(3, 6)] public string Description;
         public TowersType TowerType;
         public Sprite Sprite;
         public TowerStats TowerStats;

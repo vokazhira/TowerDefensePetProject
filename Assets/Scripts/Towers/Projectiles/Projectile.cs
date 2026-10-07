@@ -20,11 +20,26 @@ namespace Towers.Projectiles
 
         protected virtual void HitTarget()
         {
-            if (_target != null && !_target.Health.IsDead)
+            ApplyHit(_target, _damage);
+            Despawn();
+        }
+
+        protected void ApplyHit(Enemy enemy, DamageInfo damage)
+        {
+            if (IsAlive(enemy))
             {
-                _hitHandler?.HandleHit(_target, _damage);
+                _hitHandler.HandleHit(enemy, damage);
             }
-            LeanPool.Despawn(this.gameObject);
+        }
+
+        protected void Despawn()
+        {
+            LeanPool.Despawn(gameObject);
+        }
+        
+        protected static bool IsAlive(Enemy enemy)
+        {
+            return enemy != null && enemy.gameObject.activeInHierarchy && !enemy.Health.IsDead;
         }
 
         protected virtual void OnDisable()

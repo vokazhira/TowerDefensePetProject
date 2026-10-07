@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66659c53e2e141a380d9097167b4a8de, type: 3}
+  m_Name: BombTowerDataSO
+  m_EditorClassIdentifier: 
+  TowerName: Bomb Tower
+  Description: "\u0421\u0442\u0440\u0435\u043B\u044F\u0435\u0442 \u043F\u043E \u043F\u043B\u043E\u0449\u0430\u0434\u0438"
+  TowerType: 0
+  Sprite: {fileID: 21300000, guid: d0385e81792813d47941df5768214d4e, type: 3}
+  TowerStats:
+    Damage: 45
+    AttackSpeed: 1
+    Range: 25
+    MultishotChance: 0
+    CritChance: 0
+    CritMultiplier: 0
+    MaxHealth: 700
+    HealthRegeneration: 0
+    Defense: 0
+    VampirismChance: 0
+    VampirismMultiplier: 0
+    WaveGoldReward: 0
+    WaveCrystalReward: 0
+    GoldPerKillBonus: 0
+    FreeUpgradeChance: 0
+  Multipliers:
+    Damage: 2
+    AttackSpeed: 1
+    Range: 1
+    MultishotChance: 0.1
+    CritChance: 0.1
+    CritMultiplier: 0.1
+    MaxHealth: 0.1
+    HealthRegeneration: 0.1
+    Defense: 0.1
+    VampirismChance: 0.1
+    VampirismMultiplier: 0.1
+    WaveGoldReward: 1
+    WaveCrystalReward: 1
+    GoldPerKillBonus: 1
+    FreeUpgradeChance: 0.25
+  Projectile: {fileID: 2700659172993580337, guid: 6f7f6b12f1cc1a64b83a83e68ba59957, type: 3}

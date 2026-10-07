@@ -11,7 +11,8 @@ namespace Game
 {
     public class BattleBootstrap : MonoBehaviour
     {
-        [SerializeField] private TowerDataSO _normalTowerData;
+        [SerializeField] private TowerDataSO _defaultTowerData;
+        [SerializeField] private SpriteRenderer _towerSpriteRenderer;
         [SerializeField] private TowerRuntimeStats _towerRuntimeStats;
         [SerializeField] private TowerLogic _towerLogic;
         [SerializeField] private TowerHealth _towerHealth;
@@ -24,8 +25,11 @@ namespace Game
         private void Start()
         {
             _gameCurrency = new GameCurrency();
+            
+            TowerDataSO towerData = GetSelectedTower();
+            ApplyTowerSprite(towerData);
 
-            _towerRuntimeStats.Init(_normalTowerData);
+            _towerRuntimeStats.Init(towerData);
             TowerDamageDealerFactory dealerFactory = new TowerDamageDealerFactory(new ChanceRoller());
             TowerDamageDealer damageDealer = dealerFactory.Create(_towerRuntimeStats, _towerHealth);
             
@@ -35,6 +39,20 @@ namespace Game
             _battleUpgradePanel.Init(_gameCurrency);
             
             _levelController.StartSelectedLevel(_towerRuntimeStats);
+        }
+        
+        private TowerDataSO GetSelectedTower()
+        {
+            TowerDataSO selected = GameSession.Instance.SelectedTower;
+            return selected != null ? selected : _defaultTowerData;
+        }
+        
+        private void ApplyTowerSprite(TowerDataSO towerData)
+        {
+            if (towerData.Sprite != null)
+            {
+                _towerSpriteRenderer.sprite = towerData.Sprite;
+            }
         }
 
         private void OnDestroy()

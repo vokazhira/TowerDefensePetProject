@@ -5,6 +5,6 @@
         ArrowTower,
         FireTower,
         LightningTower,
-        CannonTower
+        BombTower
     }
 }

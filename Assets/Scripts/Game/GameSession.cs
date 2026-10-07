@@ -4,6 +4,7 @@ using Game.Currency;
 using Game.Events;
 using Game.States;
 using ScriptableObjectData.LevelSO;
+using ScriptableObjectData.TowerSO;
 using Towers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,6 +17,7 @@ namespace Game
 
         public GameState State { get; private set; } = GameState.Menu;
         public LevelData SelectedLevel { get; private set; }
+        public TowerDataSO SelectedTower { get; private set; }
         public int TotalCrystals { get; private set; }
         
         public event Action<int> OnTotalCrystalsChanged;
@@ -73,6 +75,11 @@ namespace Game
         {
             State = GameState.Menu;
             SceneManager.LoadScene("Menu");
+        }
+        
+        public void SelectTower(TowerDataSO tower)
+        {
+            SelectedTower = tower;
         }
 
         private void AddCrystals(CrystalsEarned earned)
