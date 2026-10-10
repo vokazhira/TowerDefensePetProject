@@ -1,39 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Enemies;
-using Game.Chances;
-using Lean.Pool;
-using Towers.Combat;
-using Towers.Projectiles;
+using Towers.Attacks;
 using UnityEngine;
 
 namespace Towers
 {
     public class TowerLogic : MonoBehaviour
     {
-        private const float MinAttackSpeed = 0.01f;
-        
         [SerializeField] private CircleCollider2D _rangeCollider;
-        [SerializeField, Min(0f)] private float _multishotDelay = 0.12f;
 
         private TowerRuntimeStats _runtimeStats;
         private TowerHealth _towerHealth;
-        private List<Enemy> _enemiesInRange = new List<Enemy>();
+        private ITowerAttack _attack;
 
-        private IChanceRoller _chanceRoller;
-        private TowerDamageDealer _damageDealer;
-        
-        private Coroutine _shootRoutine;
+        private readonly List<Enemy> _enemiesInRange = new List<Enemy>();
         private Enemy _currentTarget;
 
-        public void Init(TowerRuntimeStats runtimeStats, TowerDamageDealer damageDealer)
+        public void Init(TowerRuntimeStats runtimeStats, ITowerAttack attack)
         {
             _runtimeStats = runtimeStats;
-            _damageDealer = damageDealer;
+            _attack = attack;
             _towerHealth = GetComponent<TowerHealth>();
-            _chanceRoller = new ChanceRoller();
-            
-            
+
             _towerHealth.ConfigureAtLevelStart(_runtimeStats.Stats);
             _rangeCollider.isTrigger = true;
             _rangeCollider.radius = _runtimeStats.Stats.Range;
@@ -43,17 +31,14 @@ namespace Towers
 
         private void Update()
         {
-            if (_runtimeStats == null) return;
-            
-            if (_currentTarget == null && _enemiesInRange.Count > 0)
+            if (_attack == null) return;
+
+            if (!IsValidTarget(_currentTarget))
             {
                 _currentTarget = GetNearestEnemy();
             }
 
-            if (_currentTarget != null && _shootRoutine == null)
-            {
-                _shootRoutine = StartCoroutine(ShootRoutine());
-            }
+            _attack.Tick(_currentTarget);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -72,58 +57,21 @@ namespace Towers
             }
         }
 
-        private IEnumerator ShootRoutine()
+        private bool IsValidTarget(Enemy enemy)
         {
-            while (IsAlive(_currentTarget))
-            {
-                float attackInterval = 1f / Mathf.Max(MinAttackSpeed, _runtimeStats.Stats.AttackSpeed);
-                
-                Fire(_currentTarget);
-                TryMultishot(_currentTarget, attackInterval);
-
-                yield return new WaitForSeconds(attackInterval);
-                _currentTarget = GetNearestEnemy();
-            }
-
-            _shootRoutine = null;
-        }
-
-        private void TryMultishot(Enemy target, float attackInterval)
-        {
-            if (!_chanceRoller.Roll(_runtimeStats.Stats.MultishotChance)) return;
-
-            float delay = Mathf.Min(_multishotDelay, attackInterval * 0.5f);
-            StartCoroutine(FireExtraShot(target, delay));
-        }
-
-        private IEnumerator FireExtraShot(Enemy target, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-
-            Enemy finalTarget = IsAlive(target) ? target : GetNearestEnemy();
-
-            if (finalTarget != null)
-            {
-                Fire(finalTarget);
-            }
-        }
-
-        private void Fire(Enemy target)
-        {
-            Projectile projectile = LeanPool.Spawn(_runtimeStats.TowerData.Projectile, transform.position, Quaternion.identity);
-            projectile.Init(target, _damageDealer.CreateDamage(), _damageDealer);
+            return IsAlive(enemy) && _enemiesInRange.Contains(enemy);
         }
 
         private Enemy GetNearestEnemy()
         {
             _enemiesInRange.RemoveAll(enemy => !IsAlive(enemy));
-            
+
             Enemy nearest = null;
             float nearestDistance = float.MaxValue;
 
             foreach (Enemy enemy in _enemiesInRange)
             {
-                float distance  = Vector2.Distance(transform.position, enemy.transform.position);
+                float distance = Vector2.Distance(transform.position, enemy.transform.position);
 
                 if (distance < nearestDistance)
                 {
@@ -131,7 +79,7 @@ namespace Towers
                     nearest = enemy;
                 }
             }
-            
+
             return nearest;
         }
 
@@ -153,6 +101,11 @@ namespace Towers
             {
                 _towerHealth.ApplyStats(_runtimeStats.Stats);
             }
+        }
+
+        private void OnDisable()
+        {
+            _attack?.Stop();
         }
 
         private void OnDestroy()

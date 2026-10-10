@@ -3,6 +3,7 @@ using Game.Currency;
 using Game.Waves;
 using ScriptableObjectData.TowerSO;
 using Towers;
+using Towers.Attacks;
 using Towers.Combat;
 using UI;
 using UnityEngine;
@@ -33,7 +34,9 @@ namespace Game
             TowerDamageDealerFactory dealerFactory = new TowerDamageDealerFactory(new ChanceRoller());
             TowerDamageDealer damageDealer = dealerFactory.Create(_towerRuntimeStats, _towerHealth);
             
-            _towerLogic.Init(_towerRuntimeStats, damageDealer);
+            ITowerAttack attack = towerData.Attack.CreateAttack();
+            attack.Init(_towerRuntimeStats, damageDealer, _towerLogic.transform);
+            _towerLogic.Init(_towerRuntimeStats, attack);
 
             _levelView.Init(_gameCurrency);
             _battleUpgradePanel.Init(_gameCurrency);

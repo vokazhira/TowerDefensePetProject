@@ -24,4 +24,14 @@ namespace Enemies
             return _factory.Create(type, point);
         }
     }
+    
+    public struct EnemySpawned
+    {
+        public Enemy Enemy;
+
+        public EnemySpawned(Enemy enemy)
+        {
+            Enemy = enemy;
+        }
+    }
 }

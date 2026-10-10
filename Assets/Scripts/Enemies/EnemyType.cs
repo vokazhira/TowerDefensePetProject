@@ -4,6 +4,10 @@
     {
         Slow,
         Normal,
-        Fast
+        Fast,
+        Splitter,
+        SmallSlime,
+        Summoner,
+        Archer
     }
 }

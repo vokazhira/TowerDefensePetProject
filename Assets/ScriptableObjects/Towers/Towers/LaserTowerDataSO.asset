@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66659c53e2e141a380d9097167b4a8de, type: 3}
+  m_Name: LaserTowerDataSO
+  m_EditorClassIdentifier: 
+  TowerName: Laser Tower
+  Description: "\u041D\u0430\u043F\u0440\u0430\u0432\u043B\u0435\u0442 \u0432\u043E
+    \u0432\u0440\u0430\u0433\u0430 \u043B\u0443\u0447. \u0423\u0440\u043E\u043D \u043F\u043E\u0441\u0442\u043E\u044F\u043D\u043D\u043E
+    \u0440\u0430\u0441\u0442\u0435\u0442"
+  TowerType: 4
+  Sprite: {fileID: 21300000, guid: 46712e23d71a3994d906c3660e5f528c, type: 3}
+  TowerStats:
+    Damage: 18
+    AttackSpeed: 7
+    Range: 25
+    MultishotChance: 0
+    CritChance: 0
+    CritMultiplier: 0
+    MaxHealth: 800
+    HealthRegeneration: 1
+    Defense: 0
+    VampirismChance: 0
+    VampirismMultiplier: 0
+    WaveGoldReward: 0
+    WaveCrystalReward: 0
+    GoldPerKillBonus: 0
+    FreeUpgradeChance: 0
+  Multipliers:
+    Damage: 1
+    AttackSpeed: 1
+    Range: 1
+    MultishotChance: 1
+    CritChance: 1
+    CritMultiplier: 1
+    MaxHealth: 1
+    HealthRegeneration: 1
+    Defense: 1
+    VampirismChance: 1
+    VampirismMultiplier: 1
+    WaveGoldReward: 1
+    WaveCrystalReward: 1
+    GoldPerKillBonus: 1
+    FreeUpgradeChance: 0.25
+  Attack: {fileID: 11400000, guid: 2bf7f7556b1f6a147947ab0de090b736, type: 2}
+  Projectile: {fileID: 0}

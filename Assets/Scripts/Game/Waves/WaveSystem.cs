@@ -26,11 +26,13 @@ namespace Game.Waves
         private void OnEnable()
         {
             EventBus.Subscribe<EnemyDied>(OnEnemydied);
+            EventBus.Subscribe<EnemySpawned>(OnEnemySpawned);
         }
 
         private void OnDisable()
         {
             EventBus.Unsubscribe<EnemyDied>(OnEnemydied);
+            EventBus.Unsubscribe<EnemySpawned>(OnEnemySpawned);
         }
 
         public void StartLevel(LevelData level, IResourceRewardSource rewards)
@@ -106,15 +108,17 @@ namespace Game.Waves
             {
                 for (int i = 0; i < content.Count; i++)
                 {
-                    Enemy enemy = _spawner.Spawn(content.EnemyType);
-                    
-                    if (enemy != null) _aliveEnemies++;
-                    
-                    yield return new WaitForSeconds(content.DelayBetweenSpawns);
+                   _spawner.Spawn(content.EnemyType);
+                   yield return new WaitForSeconds(content.DelayBetweenSpawns);
                 }
             }
             
             _isSpawning = false;
+        }
+        
+        private void OnEnemySpawned(EnemySpawned spawned)
+        {
+            _aliveEnemies++;
         }
 
         private void OnEnemydied(EnemyDied died)

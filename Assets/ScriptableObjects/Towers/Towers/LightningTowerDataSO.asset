@@ -15,13 +15,13 @@ MonoBehaviour:
   TowerName: Lightning Tower
   Description: "\u0421\u043D\u0430\u0440\u044F\u0434\u044B \u043E\u0442\u0441\u043A\u0430\u043A\u0438\u0432\u0430\u044E\u0442
     \u0432 \u0431\u043B\u0438\u0436\u0430\u0439\u0448\u0438\u0445 \u0432\u0440\u0430\u0433\u043E\u0432"
-  TowerType: 0
+  TowerType: 2
   Sprite: {fileID: 21300000, guid: f0d723fbdc0a7af4ea7265a14182085a, type: 3}
   TowerStats:
-    Damage: 20
+    Damage: 40
     AttackSpeed: 1
     Range: 25
-    MultishotChance: 0
+    MultishotChance: 90
     CritChance: 0
     CritMultiplier: 0
     MaxHealth: 1000
@@ -49,4 +49,5 @@ MonoBehaviour:
     WaveCrystalReward: 1
     GoldPerKillBonus: 1
     FreeUpgradeChance: 0.25
+  Attack: {fileID: 11400000, guid: 09de3a7895d85fa4a9c23f2a2e66986d, type: 2}
   Projectile: {fileID: 4614640583083022808, guid: 5ba9d33c21c97994bb18ffb7f4aeb847, type: 3}

@@ -3805,6 +3805,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 42c55167d86295e4d94a77a4e017fe74, type: 2}
   - {fileID: 11400000, guid: cc13c1c1df5818b418ec8f4b9d22ba0b, type: 2}
   - {fileID: 11400000, guid: 75498bda50ef5ae48884f0ba04cf51f3, type: 2}
+  - {fileID: 11400000, guid: e6cad84cb00cb294f8f1057fa1c49c25, type: 2}
+  - {fileID: 11400000, guid: c7fff7fab33a5d5499e68fede32a8744, type: 2}
+  - {fileID: 11400000, guid: 601c42d133c5b1547b00c89a0d576c2a, type: 2}
   _towerTransform: {fileID: 615464409}
 --- !u!4 &1492182165
 Transform:

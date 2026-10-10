@@ -99,9 +99,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 10
   _arrivalDistance: 0.1
-  _maxHits: 4
+  _maxHits: 6
   _damageReductionBounce: 0.35
-  _bounceRadius: 2
+  _bounceRadius: 3
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 8

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using Game.Events;
+using Interfaces.Damage;
 using Lean.Pool;
 using ScriptableObjectData.EnemySO;
-using Towers;
 using UnityEngine;
 
 namespace Enemies.Factories
@@ -9,11 +10,13 @@ namespace Enemies.Factories
     public class EnemyFactory
     {
         private Dictionary<EnemyType, EnemyData> _dataByType = new Dictionary<EnemyType, EnemyData>();
-        private Transform _towerTransform;
+        private EnemyContext _context;
 
         public void Init(IEnumerable<EnemyData> enemyDataList, Transform towerTransform)
         {
-            _towerTransform = towerTransform;
+            IDamageable towerTarget = towerTransform.GetComponentInParent<IDamageable>();
+            
+            _context = new EnemyContext(towerTransform, towerTarget, this);
             _dataByType.Clear();
             
             foreach (EnemyData data in enemyDataList)
@@ -33,8 +36,21 @@ namespace Enemies.Factories
                 return null;
             }
             
+            return Create(data, position);
+        }
+
+        public Enemy Create(EnemyData data, Vector3 position)
+        {
+            if (data == null || data.Prefab == null)
+            {
+                Debug.LogError("EnemyFactory: EnemyData или его Prefab не назначен");
+                return null;
+            }
+
             Enemy enemy = LeanPool.Spawn(data.Prefab, position, Quaternion.identity);
-            enemy.Init(data.Stats, _towerTransform);
+            enemy.Init(data.Stats, _context);
+
+            EventBus.Invoke(new EnemySpawned(enemy));
             return enemy;
         }
     }

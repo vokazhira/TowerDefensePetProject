@@ -50,4 +50,5 @@ MonoBehaviour:
     WaveCrystalReward: 1
     GoldPerKillBonus: 1
     FreeUpgradeChance: 0.25
+  Attack: {fileID: 11400000, guid: 09de3a7895d85fa4a9c23f2a2e66986d, type: 2}
   Projectile: {fileID: 4505351148469685283, guid: 4022825666010314f9d7965e5fa7b50f, type: 3}

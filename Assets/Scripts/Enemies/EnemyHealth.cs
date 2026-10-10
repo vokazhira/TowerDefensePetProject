@@ -1,4 +1,5 @@
-﻿using Game.Currency;
+﻿using System;
+using Game.Currency;
 using Game.Events;
 using Interfaces.Damage;
 using Lean.Pool;
@@ -15,6 +16,8 @@ namespace Enemies
         public float CurrentHealth {get; private set;}
         public float MaxHealth => _maxHealth;
         public bool IsDead => _isDead || CurrentHealth <= 0f;
+        
+        public event Action Killed;
 
         public void Init(float maxHealth, Enemy owner)
         {
@@ -32,6 +35,7 @@ namespace Enemies
 
             if (CurrentHealth <= 0f)
             {
+                Killed?.Invoke();
                 Die();
             }
         }

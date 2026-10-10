@@ -1,4 +1,5 @@
-﻿using Towers;
+﻿using ScriptableObjectData.AttackSO;
+using Towers;
 using Towers.Projectiles;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace ScriptableObjectData.TowerSO
         public Sprite Sprite;
         public TowerStats TowerStats;
         public TowerStatsMultiplier Multipliers;
+        public TowerAttackSO Attack;
         public Projectile Projectile;
     }
 }
