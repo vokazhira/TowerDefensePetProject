@@ -45,6 +45,8 @@ namespace Game.Waves
         
         public void HandleVictory()
         {
+            GameSession.Instance.CompleteSelectedLevel();
+            
             _levelView.Hide();
             _resultPanel.ShowVictory(_waveSystem.CrystalEarnedThisLevel);
         }

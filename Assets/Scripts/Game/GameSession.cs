@@ -24,6 +24,7 @@ namespace Game
         public event Action<TowerStatType> OnPermanentUpgradeChanged;
         
         private Dictionary<TowerStatType, int> _permanentLevels = new Dictionary<TowerStatType, int>();
+        private HashSet<LevelData> _completedLevels = new HashSet<LevelData>();
          
         private void Awake()
         {
@@ -69,6 +70,23 @@ namespace Game
             SelectedLevel = level;
             State = GameState.Game;
             SceneManager.LoadScene("Game");
+        }
+        
+        public void SelectLevel(LevelData level)
+        {
+            SelectedLevel = level;
+        }
+
+        public void CompleteSelectedLevel()
+        {
+            if (SelectedLevel == null) return;
+
+            _completedLevels.Add(SelectedLevel);
+        }
+
+        public bool IsLevelCompleted(LevelData level)
+        {
+            return _completedLevels.Contains(level);
         }
 
         public void ReturnToMenu()

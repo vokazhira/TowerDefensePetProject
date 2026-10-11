@@ -14,11 +14,6 @@ namespace Game
         {
             _upgradePanelView.Init();
         }
-        
-        public void StartLevel(LevelData levelData)
-        {
-            GameSession.Instance.OpenLevel(levelData);
-        }
 
         public void OpenUpgrades() => _upgradePanel.SetActive(true);
         public void CloseUpgrades() => _upgradePanel.SetActive(false);

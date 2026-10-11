@@ -30,7 +30,7 @@ namespace UI
         private void Show(string title, int crystals)
         {
             _resultTitleText.text = title;
-            _crystalsEarnedText.text = $"+{crystals} кристаллов";
+            _crystalsEarnedText.text = $"{crystals}";
             _rootPanel.SetActive(true);
         }
     }
