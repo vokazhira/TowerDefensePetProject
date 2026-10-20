@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Game.Waves
 {
-    public class WaveSystem : MonoBehaviour
+    public class WaveSystem : MonoBehaviour, IWaveBreak
     {
         [SerializeField] private EnemySpawner _spawner;
         
@@ -20,8 +20,16 @@ namespace Game.Waves
         private bool _isSpawning;
         private bool _isRunning;
         private int _crystalEarnedThisLevel;
+        private int _completedWaves;
+        private int _totalWaves;
+        private bool _isOnBreak;
+        private float _breakTimeLeft;
         
         public int CrystalEarnedThisLevel => _crystalEarnedThisLevel;
+        public int CompletedWaves => _completedWaves;
+        public int TotalWaves => _totalWaves;
+        public bool IsOnBreak => _isOnBreak;
+        public float BreakTimeLeft => _breakTimeLeft;
 
         private void OnEnable()
         {
@@ -45,6 +53,8 @@ namespace Game.Waves
             _currentWaveIndex = 0;
             _aliveEnemies = 0;
             _crystalEarnedThisLevel = 0;
+            _completedWaves = 0;
+            _totalWaves = level.Waves.Count;
 
             StartCoroutine(RunLevel());
         }
@@ -52,9 +62,15 @@ namespace Game.Waves
         public void StopLevel()
         {
             StopAllCoroutines();
+            EndBreak();
             _isRunning = false;
             _isSpawning = false;
             _currentLevel = null;
+        }
+        
+        public void SkipBreak()
+        {
+            if (_isOnBreak) _breakTimeLeft = 0f;
         }
 
         private IEnumerator RunLevel()
@@ -62,7 +78,15 @@ namespace Game.Waves
             while (_currentWaveIndex < _currentLevel.Waves.Count)
             {
                 WaveData wave = _currentLevel.Waves[_currentWaveIndex];
-                yield return new WaitForSeconds(wave.DelayBeforeWave);
+                if (_currentWaveIndex == 0)
+                {
+                    yield return new WaitForSeconds(wave.DelayBeforeWave);
+                }
+                else
+                {
+                    yield return StartCoroutine(RunBreak(wave.DelayBeforeWave));
+                }
+
 
                 EventBus.Invoke<WaveChange>(new WaveChange(_currentWaveIndex + 1, _currentLevel.Waves.Count));
                 
@@ -72,6 +96,7 @@ namespace Game.Waves
 
                 GetWaveRewards();
                 
+                _completedWaves++;
                 _currentWaveIndex++;
             }
 
@@ -79,10 +104,35 @@ namespace Game.Waves
             _crystalEarnedThisLevel += fullClearBonus;
             EventBus.Invoke(new CrystalsEarned(fullClearBonus));
 
-            EventBus.Invoke(new AllWavesCompleted());
             _isRunning = false;
             _currentLevel = null;
+            EventBus.Invoke(new AllWavesCompleted());
         }
+        
+        private IEnumerator RunBreak(float duration)
+        {
+            _breakTimeLeft = Mathf.Max(0f, duration);
+            _isOnBreak = true;
+            EventBus.Invoke(new WaveBreakStarted());
+
+            while (_breakTimeLeft > 0f)
+            {
+                _breakTimeLeft -= Time.deltaTime;
+                yield return null;
+            }
+
+            EndBreak();
+        }
+
+        private void EndBreak()
+        {
+            if (!_isOnBreak) return;
+
+            _isOnBreak = false;
+            _breakTimeLeft = 0f;
+            EventBus.Invoke(new WaveBreakFinished());
+        }
+
 
         private void GetWaveRewards()
         {
@@ -143,5 +193,7 @@ namespace Game.Waves
         }
     }
     
-    public struct AllWavesCompleted{}
+    public struct AllWavesCompleted {}
+    public struct WaveBreakStarted {}
+    public struct WaveBreakFinished {}
 }

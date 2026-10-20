@@ -1,5 +1,7 @@
-﻿using TMPro;
+﻿using Game.Events;
+using TMPro;
 using Towers;
+using UI.Popups;
 using UnityEngine;
 using UnityEngine.UI;
 using Upgrades;
@@ -41,7 +43,13 @@ namespace UI
 
         private void OnClick()
         {
-            _upgradeSystem.TryUpgrade(_statType);
+            UpgradeResult result = _upgradeSystem.TryUpgrade(_statType);
+
+            if (result.IsSuccess)
+            {
+                EventBus.Invoke(new StatUpgraded(_statType, result.Amount, result.IsFree, transform.position));
+            }
+
             Refresh();
         }
 

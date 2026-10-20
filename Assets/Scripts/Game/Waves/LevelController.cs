@@ -13,6 +13,9 @@ namespace Game.Waves
         [SerializeField] private WaveSystem _waveSystem;
         [SerializeField] private LevelView _levelView;
         [SerializeField] private LevelResultPanel _resultPanel;
+        [SerializeField] private NextWaveButtonView _nextWaveButton;
+        
+        private bool _isFinished;
         
         private void OnEnable()
         {
@@ -36,25 +39,43 @@ namespace Game.Waves
                 return;
             }
             
+            _isFinished = false;
             _resultPanel.Hide();
             _levelView.Show();
+            _nextWaveButton.Init(_waveSystem);
             
             EventBus.Invoke<LevelData>(levelData);
             _waveSystem.StartLevel(levelData, rewards);
         }
-        
-        public void HandleVictory()
+
+        private void HandleVictory()
         {
+            if (_isFinished) return;
+
             GameSession.Instance.CompleteSelectedLevel();
-            
-            _levelView.Hide();
-            _resultPanel.ShowVictory(_waveSystem.CrystalEarnedThisLevel);
+            _resultPanel.ShowVictory(FinishLevel());
         }
-        public void HandleDefeat()
+
+        private void HandleDefeat()
         {
+            if (_isFinished) return;
+
             _waveSystem.StopLevel();
+            _resultPanel.ShowDefeat(FinishLevel());
+        }
+        
+        private LevelResult FinishLevel()
+        {
+            _isFinished = true;
             _levelView.Hide();
-            _resultPanel.ShowDefeat(_waveSystem.CrystalEarnedThisLevel);
+
+            LevelResult result = new LevelResult(
+                _waveSystem.CrystalEarnedThisLevel,
+                _waveSystem.CompletedWaves,
+                _waveSystem.TotalWaves);
+
+            GameSession.Instance.AddCrystals(result.Crystals);
+            return result;
         }
     }
 }

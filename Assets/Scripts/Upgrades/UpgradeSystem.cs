@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using Game;
 using Game.Chances;
 using Game.Currency;
-using Game.Events;
 using ScriptableObjectData.TowerSO;
 using Towers;
-using UI.Popups;
 using UnityEngine;
 using Upgrades.Prices;
 
@@ -56,34 +54,38 @@ namespace Upgrades
             return TowerStatRules.IsMaxed(statType, GetCurrentValue(statType));
         }
 
-        public void TryUpgrade(TowerStatType statType)
+        public UpgradeResult TryUpgrade(TowerStatType statType)
         {
-            if (!CanBuy(statType)) return;
+            if (!CanBuy(statType)) return UpgradeResult.Failed;
             
             int price = GetPrice(statType);
+            float step = GetUpgradeStep(statType);
+            bool isFree = false;
 
             if (_mode == UpgradeMode.Permanent)
             {
-                if (!GameSession.Instance.TrySpendCrystals(price)) return;
+                if (!GameSession.Instance.TrySpendCrystals(price)) return UpgradeResult.Failed;
                 
                 GameSession.Instance.IncreasePermanentLevel(statType);
             }
             else
             {
-                bool isFree = RollFreeUpgrade();
+                isFree = RollFreeUpgrade();
                 
-                if (!isFree && !_gameCurrency.TrySpendGold(price)) return;
+                if (!isFree && !_gameCurrency.TrySpendGold(price)) return UpgradeResult.Failed;
                 
                 _battleLevels[statType]++;
                 _towerRuntimeStats.UpgradeForCurrentLevel(statType);
-
-                if (isFree)
-                {
-                    EventBus.Invoke<FreeUpgradeReceived>(new FreeUpgradeReceived());
-                }
             }
             
             OnUpgradeChanged?.Invoke(statType);
+            return new UpgradeResult(isFree, step);
+        }
+        
+        public float GetUpgradeStep(TowerStatType statType)
+        {
+            TowerDataSO data = _mode == UpgradeMode.Battle ? _towerRuntimeStats.TowerData : _towerData;
+            return data != null ? data.Multipliers.Get(statType) : 0f;
         }
 
         public string GetValueText(TowerStatType statType)

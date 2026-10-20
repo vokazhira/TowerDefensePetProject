@@ -5,34 +5,19 @@ using UnityEngine;
 
 namespace UI.Popups
 {
-    public class PopupSpawner : MonoBehaviour
+    public class DamagePopupSpawner : MonoBehaviour
     {
         [SerializeField] private Popup _popupPrefab;
-        [SerializeField] private Transform _freeUpgradeTransform;
         [SerializeField] private Vector3 _offset = new Vector3(0f, 0.5f, 0f);
         
-        private void OnEnable()
-        {
-            EventBus.Subscribe<EnemyDamaged>(HandleEnemyDamaged);
-            EventBus.Subscribe<FreeUpgradeReceived>(HandleFreeUpgrade);
-        }
-
-        private void OnDisable()
-        {
-            EventBus.Unsubscribe<EnemyDamaged>(HandleEnemyDamaged);
-            EventBus.Unsubscribe<FreeUpgradeReceived>(HandleFreeUpgrade);
-        }
-
+        private void OnEnable() => EventBus.Subscribe<EnemyDamaged>(HandleEnemyDamaged);
+        private void OnDisable() => EventBus.Unsubscribe<EnemyDamaged>(HandleEnemyDamaged);
+        
         private void HandleEnemyDamaged(EnemyDamaged e)
         {
             string amount = Mathf.RoundToInt(e.Amount).ToString();
             string text = e.IsCritical ? $"Крит!\n {amount}" : amount;
             Spawn(e.Position, text, Color.red);
-        }
-
-        private void HandleFreeUpgrade()
-        {
-            Spawn(_freeUpgradeTransform.position, "Бесплатно!", Color.cyan);
         }
         
         private void Spawn(Vector3 position, string text, Color color)
@@ -55,6 +40,4 @@ namespace UI.Popups
             IsCritical = isCritical;
         }
     }
-
-    public readonly struct FreeUpgradeReceived {}
 }

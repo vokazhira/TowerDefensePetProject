@@ -20,4 +20,4 @@ MonoBehaviour:
   - EnemyType: 2
     Count: 6
     DelayBetweenSpawns: 0.2
-  DelayBeforeWave: 1.5
+  DelayBeforeWave: 5

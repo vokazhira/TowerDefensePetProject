@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.Currency;
-using Game.Events;
 using Game.States;
 using ScriptableObjectData.LevelSO;
 using ScriptableObjectData.TowerSO;
@@ -41,8 +39,6 @@ namespace Game
             {
                 _permanentLevels[statType] = 0;
             }
-            
-            EventBus.Subscribe<CrystalsEarned>(AddCrystals);
         }
 
         public int GetPermanentLevel(TowerStatType statType)
@@ -56,6 +52,14 @@ namespace Game
             OnPermanentUpgradeChanged?.Invoke(statType);
         }
 
+        public void AddCrystals(int amount)
+        {
+            if (amount <= 0) return;
+
+            TotalCrystals += amount;
+            OnTotalCrystalsChanged?.Invoke(TotalCrystals);
+        }
+        
         public bool TrySpendCrystals(int amount)
         {
             if (TotalCrystals < amount) return false;
@@ -69,6 +73,7 @@ namespace Game
         {
             SelectedLevel = level;
             State = GameState.Game;
+            Time.timeScale = 1f;
             SceneManager.LoadScene("Game");
         }
         
@@ -92,6 +97,7 @@ namespace Game
         public void ReturnToMenu()
         {
             State = GameState.Menu;
+            Time.timeScale = 1f;
             SceneManager.LoadScene("Menu");
         }
         
@@ -100,17 +106,10 @@ namespace Game
             SelectedTower = tower;
         }
 
-        private void AddCrystals(CrystalsEarned earned)
-        {
-            TotalCrystals += earned.Amount;
-            OnTotalCrystalsChanged?.Invoke(TotalCrystals);
-        }
-
         private void OnDestroy()
         {
             if (Instance == this)
             {
-                EventBus.Unsubscribe<CrystalsEarned>(AddCrystals); 
                 Instance = null;
             }
         }
